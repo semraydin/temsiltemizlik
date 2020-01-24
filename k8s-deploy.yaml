@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: temsiltemizlik
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: temsiltemizlik
+  namespace: temsiltemizlik
+spec:
+  ports:
+     - port: 80
+  selector:
+    app: temsiltemizlik
+  type: LoadBalancer   
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: temsiltemizlik
+  namespace: temsiltemizlik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: temsiltemizlik
+  template:
+    metadata:
+      labels:
+        app: temsiltemizlik
+    spec:
+      containers:
+      - name: temsiltemizlik
+        image: dockerdepo.azurecr.io/temsiltemizlik:latest
+        imagePullPolicy: Always
+        env:
+        - name: VERSION
+          value: "v1"
+      imagePullSecrets:
+      - name: docker-depo-pass-temsiltemizlik
+
+  
